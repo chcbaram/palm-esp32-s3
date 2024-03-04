@@ -52,7 +52,7 @@
 #define      HW_CLI_GUI_HEIGHT      24
 
 #define _USE_HW_LOG
-#define      HW_LOG_CH              _DEF_UART2
+#define      HW_LOG_CH              _DEF_UART1
 #define      HW_LOG_BOOT_BUF_MAX    1024
 #define      HW_LOG_LIST_BUF_MAX    1024
 
