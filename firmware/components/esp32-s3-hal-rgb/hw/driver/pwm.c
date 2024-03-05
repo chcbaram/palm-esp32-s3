@@ -1,5 +1,5 @@
 #include "pwm.h"
-
+#include "gpio.h"
 
 
 static bool is_init = false;
@@ -24,7 +24,10 @@ void pwmWrite(uint8_t ch, uint16_t pwm_data)
   if (ch >= HW_PWM_MAX_CH || is_init != true) 
     return;
 
-  // i2cExpWrite(I2C_REG_LCD_BL_PWM, (uint8_t *)&pwm_data, 1);
+  if (pwm_data > 0)
+    gpioPinWrite(_PIN_GPIO_LCD_BLK, _DEF_HIGH);
+  else
+    gpioPinWrite(_PIN_GPIO_LCD_BLK, _DEF_LOW);
 }
  
 uint16_t pwmRead(uint8_t ch)
@@ -33,8 +36,6 @@ uint16_t pwmRead(uint8_t ch)
 
   if (ch >= HW_PWM_MAX_CH || is_init != true) 
     return 0;
-
-  // i2cExpRead(I2C_REG_LCD_BL_PWM, (uint8_t *)&ret, 1);
 
   return (uint16_t)ret;
 }

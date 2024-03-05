@@ -46,7 +46,7 @@ typedef struct
 
 static i2c_tbl_t i2c_tbl[I2C_MAX_CH] =
     {
-        {I2C_NUM_0, GPIO_NUM_41,  GPIO_NUM_42},
+        {I2C_NUM_0, GPIO_NUM_6,  GPIO_NUM_7},
     };
 
 

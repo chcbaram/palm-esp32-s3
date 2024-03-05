@@ -12,29 +12,29 @@
 
 
 
-#define GPIO_LCD_DE    (GPIO_NUM_17)
-#define GPIO_LCD_VSYNC (GPIO_NUM_18)
-#define GPIO_LCD_HSYNC (GPIO_NUM_8)
-#define GPIO_LCD_PCLK  (GPIO_NUM_16)
+#define GPIO_LCD_DE    (GPIO_NUM_39)
+#define GPIO_LCD_VSYNC (GPIO_NUM_38)
+#define GPIO_LCD_HSYNC (GPIO_NUM_45)
+#define GPIO_LCD_PCLK  (GPIO_NUM_40)
 
-#define GPIO_LCD_R0    (GPIO_NUM_45)
-#define GPIO_LCD_R1    (GPIO_NUM_0)
-#define GPIO_LCD_R2    (GPIO_NUM_39)
-#define GPIO_LCD_R3    (GPIO_NUM_40)
-#define GPIO_LCD_R4    (GPIO_NUM_2)
+#define GPIO_LCD_R0    (GPIO_NUM_48)
+#define GPIO_LCD_R1    (GPIO_NUM_47)
+#define GPIO_LCD_R2    (GPIO_NUM_21)
+#define GPIO_LCD_R3    (GPIO_NUM_14)
+#define GPIO_LCD_R4    (GPIO_NUM_13)
 
 #define GPIO_LCD_G0    (GPIO_NUM_12)
-#define GPIO_LCD_G1    (GPIO_NUM_13)
-#define GPIO_LCD_G2    (GPIO_NUM_14)
-#define GPIO_LCD_G3    (GPIO_NUM_21)
-#define GPIO_LCD_G4    (GPIO_NUM_47)
-#define GPIO_LCD_G5    (GPIO_NUM_48)
+#define GPIO_LCD_G1    (GPIO_NUM_11)
+#define GPIO_LCD_G2    (GPIO_NUM_10)
+#define GPIO_LCD_G3    (GPIO_NUM_9)
+#define GPIO_LCD_G4    (GPIO_NUM_46)
+#define GPIO_LCD_G5    (GPIO_NUM_3)
 
-#define GPIO_LCD_B0    (GPIO_NUM_3)
-#define GPIO_LCD_B1    (GPIO_NUM_46)
-#define GPIO_LCD_B2    (GPIO_NUM_9)
-#define GPIO_LCD_B3    (GPIO_NUM_10)
-#define GPIO_LCD_B4    (GPIO_NUM_11)
+#define GPIO_LCD_B0    (GPIO_NUM_8)
+#define GPIO_LCD_B1    (GPIO_NUM_0)
+#define GPIO_LCD_B2    (GPIO_NUM_18)
+#define GPIO_LCD_B3    (GPIO_NUM_17)
+#define GPIO_LCD_B4    (GPIO_NUM_16)
 
 
 static bool lcdcISR(esp_lcd_panel_handle_t panel, const esp_lcd_rgb_panel_event_data_t *edata, void *user_ctx);

@@ -36,6 +36,7 @@
 #define _USE_HW_LCDC
 #define _USE_HW_LVGL
 #define _USE_HW_FT6236
+#define _USE_HW_PCA9554
 
 
 #define _USE_HW_UART
@@ -63,7 +64,7 @@
 #define      HW_TOUCH_MAX_CH        2
 
 #define _USE_HW_GPIO
-#define      HW_GPIO_MAX_CH         4
+#define      HW_GPIO_MAX_CH         5
 
 #define _USE_HW_PWM
 #define      HW_PWM_MAX_CH          1
@@ -79,7 +80,7 @@
 #define _USE_HW_LCD
 #define      HW_LCD_LVGL            1
 #define      HW_LCD_LOGO            1
-#define      HW_LCD_ROTATE          1
+#define      HW_LCD_ROTATE          0
 #define      HW_LCD_FB_CNT          HW_LCDC_FB_CNT
 
 #if HW_LCD_ROTATE == 1
@@ -90,9 +91,16 @@
 #define      HW_LCD_HEIGHT          HW_ST7701_HEIGHT
 #endif
 
+
+//-- CLI
+//
+#define _USE_CLI_HW_GPIO            1
+#define _USE_CLI_HW_PCA9554         1
+
+
 #define _PIN_GPIO_LCD_TS_RST        1
 #define _PIN_GPIO_LCD_BLK           2
 #define _PIN_GPIO_LCD_TS_INT        0
-
+#define _PIN_GPIO_LED               4
 
 #endif 

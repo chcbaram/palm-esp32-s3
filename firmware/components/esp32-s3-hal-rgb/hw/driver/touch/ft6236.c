@@ -74,7 +74,6 @@ void ft6236Thread(void* arg)
   {
     uint8_t data;
 
-
     gpioPinWrite(FT6246_PIN_RESET, _DEF_LOW);
     delay(50);
     gpioPinWrite(FT6246_PIN_RESET, _DEF_HIGH);
@@ -170,8 +169,13 @@ bool ft6236GetInfo(ft6236_info_t *p_info)
         y  = (buf[FT6236_REG_P_YH + (6*i)] & 0x0F) << 8;
         y |= (buf[FT6236_REG_P_YL + (6*i)] & 0xFF) << 0;
 
+        #if HW_LCD_ROTATE == 1
         p_info->point[i].x = FT6236_TOUCH_WIDTH - y;
         p_info->point[i].y = x; 
+        #else
+        p_info->point[i].x = x;
+        p_info->point[i].y = y; 
+        #endif
       }
     }
     else

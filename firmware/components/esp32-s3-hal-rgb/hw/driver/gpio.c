@@ -3,12 +3,16 @@
 #ifdef _USE_HW_GPIO
 #include "cli.h"
 #include "driver/gpio.h"
+#include "pca9554.h"
+
+
+#define NAME_DEF(x)  x, #x
 
 
 typedef enum
 {
   GPIO_HW,
-  GPIO_I2C_EXP,
+  GPIO_EX,
 } GpioType_t;
 
 
@@ -24,10 +28,11 @@ typedef struct
 
 static const gpio_tbl_t gpio_tbl[GPIO_MAX_CH] =
     {
-      {GPIO_HW, (uint32_t)GPIO_NUM_1,     _DEF_INPUT,   _DEF_HIGH, "LCD_TP_INT"  },   // 0. LCD_TP_INT
-      {GPIO_HW, (uint32_t)GPIO_NUM_38,    _DEF_OUTPUT,  _DEF_HIGH, "LCD_TP_RESET"},   // 1. LCD_TP_RESET      
-      {GPIO_HW, (uint32_t)GPIO_NUM_4,     _DEF_OUTPUT,  _DEF_HIGH, "LCD_BLK"     },   // 2. LCD_BLK  
-      {GPIO_HW, (uint32_t)GPIO_NUM_5,     _DEF_OUTPUT,  _DEF_HIGH, "LCD_RESET"   },   // 3. LCD_RESET  
+      {GPIO_HW, (uint32_t)GPIO_NUM_15,    _DEF_INPUT,   _DEF_HIGH, "LCD_TP_INT"  },   // 0. LCD_TP_INT
+      {GPIO_EX, (uint32_t)1,              _DEF_OUTPUT,  _DEF_HIGH, "LCD_TP_RESET"},   // 1. LCD_TP_RESET      
+      {GPIO_HW, (uint32_t)GPIO_NUM_1,     _DEF_OUTPUT,  _DEF_LOW,  "LCD_BLK"     },   // 2. LCD_BLK  
+      {GPIO_EX, (uint32_t)0,              _DEF_OUTPUT,  _DEF_HIGH, "LCD_RESET"   },   // 3. LCD_RESET  
+      {GPIO_EX, (uint32_t)7,              _DEF_OUTPUT,  _DEF_HIGH,  "LED"         },   // 4. LED
     };
 
 static uint8_t gpio_data[GPIO_MAX_CH];
@@ -48,9 +53,20 @@ bool gpioInit(void)
 
   for (int i=0; i<GPIO_MAX_CH; i++)
   {
-    gpioPinMode(i, gpio_tbl[i].mode);
-    gpioPinWrite(i, gpio_tbl[i].init_value);
+    if (i == 2)
+      continue;
+
+    if (gpio_tbl[i].mode & _DEF_OUTPUT)
+    {
+      gpioPinWrite(i, gpio_tbl[i].init_value);
+    }      
+    gpioPinMode(i, gpio_tbl[i].mode);  
   }
+
+  gpio_set_level(GPIO_NUM_1, _DEF_LOW);
+  gpio_pullup_dis(GPIO_NUM_1);
+  gpio_pulldown_dis(GPIO_NUM_1);  
+  gpio_set_direction(GPIO_NUM_1, GPIO_MODE_INPUT_OUTPUT);  
 
 #ifdef _USE_HW_CLI
   cliAdd("gpio", cliGpio);
@@ -67,6 +83,14 @@ bool gpioPinMode(uint8_t ch, uint8_t mode)
   if (ch >= GPIO_MAX_CH)
   {
     return false;
+  }
+  if (gpio_tbl[ch].type == GPIO_EX)
+  {
+    if (mode == _DEF_INPUT)
+      pca9554PinSetMode(gpio_tbl[ch].pin, PCA9554_MODE_INPUT);
+    else
+      pca9554PinSetMode(gpio_tbl[ch].pin, PCA9554_MODE_OUTPUT);    
+    return true;
   }
 
   gpio_reset_pin(gpio_tbl[ch].pin);
@@ -92,9 +116,9 @@ bool gpioPinMode(uint8_t ch, uint8_t mode)
       break;
 
     case _DEF_OUTPUT:
+      gpio_set_direction(gpio_tbl[ch].pin, GPIO_MODE_INPUT_OUTPUT);    
       gpio_pullup_dis(gpio_tbl[ch].pin);
       gpio_pulldown_dis(gpio_tbl[ch].pin);
-      gpio_set_direction(gpio_tbl[ch].pin, GPIO_MODE_INPUT_OUTPUT);
       break;
 
     case _DEF_OUTPUT_PULLUP:
@@ -120,7 +144,15 @@ void gpioPinWrite(uint8_t ch, uint8_t value)
     return;
   }
 
-  gpio_set_level(gpio_tbl[ch].pin, value);
+  if (gpio_tbl[ch].type == GPIO_HW)
+  {
+    gpio_set_level(gpio_tbl[ch].pin, value);
+  }
+  else
+  {
+    pca9554PinWrite(gpio_tbl[ch].pin, value);
+  }
+
   gpio_data[ch] = value;
 }
 
@@ -133,7 +165,15 @@ uint8_t gpioPinRead(uint8_t ch)
     return false;
   }
 
-  ret = gpio_get_level(gpio_tbl[ch].pin);
+  if (gpio_tbl[ch].type == GPIO_HW)
+  {
+    ret = gpio_get_level(gpio_tbl[ch].pin);
+  }
+  else
+  {
+    pca9554PinRead(gpio_tbl[ch].pin, &ret);
+  }
+
   gpio_data[ch] = ret;
   return ret;
 }
@@ -144,9 +184,10 @@ void gpioPinToggle(uint8_t ch)
   {
     return;
   }
+  uint8_t gpio_out;
 
-  gpio_data[ch] = !gpio_data[ch];
-  gpioPinWrite(gpio_tbl[ch].pin, gpio_data[ch]);
+  gpio_out = !gpio_data[ch];
+  gpioPinWrite(ch, gpio_out);
 }
 
 

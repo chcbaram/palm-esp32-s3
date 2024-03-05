@@ -24,8 +24,6 @@ void apInit(void)
 void apMain(void)
 {
   uint32_t pre_time;
-  uint8_t index = 0;
-
 
   lvglInit();
 
@@ -34,16 +32,9 @@ void apMain(void)
   pre_time = millis();
   while(1)
   {
-    if (millis()-pre_time >= 2000)
+    if (millis()-pre_time >= 500)
     {
       pre_time = millis();
-
-      // if (index%2 == 0)
-      //   lv_event_send(ui_Button2, LV_EVENT_CLICKED, NULL);
-      // else
-      //   lv_event_send(ui_Button3, LV_EVENT_CLICKED, NULL);
-
-      index++;
     }
     delay(1);   
 

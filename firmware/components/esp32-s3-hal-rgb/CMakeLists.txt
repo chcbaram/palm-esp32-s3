@@ -30,6 +30,8 @@ set(requires
   "esp_mm"
   )
 
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-expansion-to-defined")
+
 
 idf_component_register(    
     SRCS ${SRC_FILES}

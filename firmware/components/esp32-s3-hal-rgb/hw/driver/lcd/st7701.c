@@ -44,8 +44,8 @@ bool st7701SpiInit(void)
   spi_bus_config_t buscfg = 
   {
     .miso_io_num = -1,
-    .mosi_io_num = GPIO_NUM_6,
-    .sclk_io_num = GPIO_NUM_7,
+    .mosi_io_num = GPIO_NUM_2,
+    .sclk_io_num = GPIO_NUM_42,
     .quadwp_io_num = -1,
     .quadhd_io_num = -1,
     .max_transfer_sz = 64*1024
@@ -55,7 +55,7 @@ bool st7701SpiInit(void)
     .command_bits = 9,
     .clock_speed_hz = 10*1000*1000,          // Clock out at 10 MHz
     .mode = 0,                               // SPI mode 0
-    .spics_io_num = GPIO_NUM_15,             // CS pin
+    .spics_io_num = GPIO_NUM_41,             // CS pin
     .queue_size = 16,                        // We want to be able to queue 8 transactions at a time
     .flags = SPI_DEVICE_HALFDUPLEX | SPI_DEVICE_NO_RETURN_RESULT, 
     .pre_cb = preCB,           
@@ -102,11 +102,17 @@ bool st7701InitRegs(void)
 
   st7701WriteCmd(0x36);   // MADCTL (36h): Memory Data Access Control
   uint8_t reg = 0;
+  #if HW_LCD_ROTATE == 1
   reg |= (0<<7);  // MY
   reg |= (0<<6);  // MX
   reg |= (0<<5);  // MV
-  reg |= (0<<4);  // ML
-  #if HW_LCD_ROTATE == 1
+  reg |= (0<<4);  // ML  
+  reg |= (1<<2);  // MH
+  #else
+  reg |= (0<<7);  // MY
+  reg |= (0<<6);  // MX
+  reg |= (0<<5);  // MV
+  reg |= (1<<4);  // ML
   reg |= (1<<2);  // MH
   #endif
   reg |= (1<<3);  // RGB
@@ -200,7 +206,7 @@ bool st7701InitRegs(void)
   st7701WriteData(0x69);
 
   st7701WriteCmd(0x3A);   // Interface Pixel Format
-  st7701WriteData(0x55);
+  st7701WriteData(0x66);
 
   st7701WriteCmd(0x2A);
   st7701WriteData(0x00); // A0);

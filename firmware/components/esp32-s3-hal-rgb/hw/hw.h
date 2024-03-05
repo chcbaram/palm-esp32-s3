@@ -30,6 +30,7 @@ extern "C" {
 #include "i2c_exp.h"
 #include "adc.h"
 #include "battery.h"
+#include "pca9554.h"
 
 
 bool hwInit(void);
